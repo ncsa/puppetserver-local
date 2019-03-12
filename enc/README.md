@@ -2,11 +2,16 @@
 Setup and manage a database to use for puppet ENC
 
 # Quickstart
+1. `admin.py --help`
+
 ### Create DB
 1. `vim tables.yaml`
 1. `admin.py --init`
 
-### Initialize DB contents
+### Add self to DB
+1. `admin.py --add --fqdn $(hostname -f) $(hostname -f)`
+
+### Add multiple nodes to DB
 ##### Using a CSV file
 1. `admin.py --mkcsv > source.csv`
 1. `vim source.csv`
@@ -17,14 +22,12 @@ Setup and manage a database to use for puppet ENC
 1. `admin.py --add --yaml source.yaml`
 
 ### Test puppet lookup of FQDN
-1. `admin.py <FQDN_of_puppet_client_node>`
+* `admin.py <FQDN_of_puppet_client_node>`
 
-# Administration of the ENC database
-### Add nodes from Yaml file
-1. `admin.py --add --yaml source.yaml`
-### Add nodes from CSV file
-1. `admin.py --add --csv source.csv`
-### Add nodes from cmdline
-1. `admin.py --add --site <SITENAME> --datacenter <DATACENTERNAME> --cluster <CLUSTERNAME> --role <ROLENAME> --environment <ENVIRONMENTNAME> <FQDN_of_puppet_client_node>`
+### List all nodes in DB
+* `admin.py -l`
 
-### Change nodes
+### Working with multiple nodes
+All commands `--add`, `--change`, `--del` support input from a yaml or a csv file. This is the best way to specify multiple nodes.
+* `admin.py --ch --yaml filename.yaml`
+* `admin.py --del --csv filename.csv`
