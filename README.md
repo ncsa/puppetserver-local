@@ -15,6 +15,3 @@ Local customizations for puppetserver.
 
 # ENC
 See [ENC Readme](enc/README.md)
-
-# R10K
-See [R10K Readme](r10k_postrun/README.md)
