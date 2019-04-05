@@ -497,7 +497,7 @@ def do_lookup():
     try:
         role = db_data[ 'role' ]
     except ( KeyError ) as e:
-        enc['classes'].append( "hostname_problem" )
+        enc['classes'] = [ 'enc_error::hostname_not_found' ]
     else:
         enc['classes'] = [ f'role::{role}' ]
     print( '---' )
