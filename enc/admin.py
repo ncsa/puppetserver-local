@@ -107,7 +107,7 @@ def get_bkup_dir():
 def load_yaml_file( filepath ):
     data = {}
     with filepath.open() as fh:
-        data = yaml.load( fh )
+        data = yaml.safe_load( fh )
     return data
 
 
