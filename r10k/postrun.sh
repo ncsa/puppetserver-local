@@ -6,6 +6,7 @@ die() {
     exit 1
 }
 
+set -x
 
 # Get path to parts depot
 if [[ -n "$PUP_CUSTOM_DIR" ]] ; then
@@ -21,4 +22,6 @@ if [[ -z "$RP" ]] ; then
     die "run-parts not found"
 fi
 
-$RP "$DIRPATH"
+# run-parts on debian 16.x works differently than on CentOS 7
+# ... have to give regex to select files to run
+$RP --verbose --regex='^[0-9]' "$DIRPATH"

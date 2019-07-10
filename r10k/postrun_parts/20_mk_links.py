@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: future_fstrings -*-
 
 import sys
 
@@ -43,7 +44,7 @@ def get_cfg():
         base = get_install_dir()
         confdir = get_install_dir() / 'config' / 'config.ini'
         cfg = configparser.ConfigParser()
-        cfg.read( confdir )
+        cfg.read( str( confdir ) )
         resources[ key ] = cfg
     return resources[ key ]
 

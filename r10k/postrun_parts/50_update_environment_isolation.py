@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: future_fstrings -*-
 
 import sys
 
@@ -37,7 +38,7 @@ def get_cfg():
         base = get_install_dir()
         confdir = get_install_dir() / 'config' / 'config.ini'
         cfg = configparser.ConfigParser()
-        cfg.read( confdir )
+        cfg.read( str( confdir ) )
         resources[ key ] = cfg
     return resources[ key ]
 
@@ -66,10 +67,10 @@ logging.debug( f"ENVDIRS: {envdirs}" )
 # Update environment isolation
 cfg = get_cfg()
 PUPPET = pathlib.Path( cfg['PUPPET']['puppet'] )
-cmd = [ PUPPET, 'generate', 'types', '--environment' ]
+cmd = [ str( PUPPET ), 'generate', 'types', '--environment' ]
 for dir in envdirs:
     logging.debug( f"about to run environment isolation for '{dir.name}'" )
-    proc = subprocess.run( cmd + [dir.name], 
+    proc = subprocess.run( cmd + [ dir.name ], 
                            check=True,
                            timeout=30
                          )

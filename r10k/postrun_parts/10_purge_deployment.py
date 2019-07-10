@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: future_fstrings -*-
 
 import sys
 
@@ -53,7 +54,7 @@ def get_cfg():
         base = get_install_dir()
         confdir = get_install_dir() / 'config' / 'config.ini'
         cfg = configparser.ConfigParser()
-        cfg.read( confdir )
+        cfg.read( str( confdir ) )
         resources[ key ] = cfg
     return resources[ key ]
 
@@ -115,7 +116,7 @@ def run():
                         break
             if purge:
                 logging.info( f"Purge: '{child}'" )
-                shutil.rmtree( child )
+                shutil.rmtree( str( child ) )
 
 
 if __name__ == '__main__':

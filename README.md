@@ -2,7 +2,7 @@
 Local customizations for puppetserver.
 
 ## Dependencies
-* Python version >= 3.6
+* Python version >= 3.5
 * https://pypi.org/project/tabulate/
 * https://pyyaml.org/wiki/PyYAMLDocumentation
 

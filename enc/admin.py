@@ -1,4 +1,5 @@
 #!.venv/bin/python3
+# -*- coding: future_fstrings -*-
 
 # Require python 3
 import sys
@@ -47,7 +48,7 @@ def get_cfg():
     if 'cfg' not in resources:
         BASE = get_base()
         cfg = configparser.ConfigParser()
-        cfg.read( BASE / 'config' / 'config.ini' )
+        cfg.read( str( BASE / 'config' / 'config.ini' ) )
         resources['cfg'] = cfg
     return resources['cfg']
 
@@ -351,7 +352,7 @@ def do_bkup():
     bkup_fn = bkup_dir / f'{timestamp}.sql.gz'
     # populate bkup file with sql data
     conn = get_db_conn()
-    with gzip.open( bkup_fn, 'wt' ) as fh:
+    with gzip.open( str( bkup_fn ), 'wt' ) as fh:
         for line in conn.iterdump():
             fh.write( f'{line}\n' )
 
@@ -369,7 +370,7 @@ def do_restore():
     if not raw_fn.is_absolute():
         # prepend bkup_dir if raw_fn is not absolute
         tgt_fn = get_bkup_dir() / raw_fn
-    with gzip.open( tgt_fn, 'rt' ) as fh:
+    with gzip.open( str( tgt_fn ), 'rt' ) as fh:
         cmdstr = ''.join( fh.readlines() )
     drop_table()
     conn = get_db_conn()
