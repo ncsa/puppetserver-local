@@ -5,14 +5,10 @@ Nodes:
             - TEXT
             - PRIMARY KEY
             - NOT NULL
-        site:
-            - TEXT
-            - NOT NULL
-            - DEFAULT "ncsa"
         datacenter:
             - TEXT
             - NOT NULL
-            - DEFAULT "ncsa"
+            - DEFAULT "default"
         cluster:
             - TEXT
             - NOT NULL
