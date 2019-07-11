@@ -72,7 +72,7 @@ def get_r10k_sources():
                                check=True,
                                timeout=30
                              )
-        data = yaml.load( proc.stdout.decode().strip() )
+        data = yaml.safe_load( proc.stdout.decode().strip() )
         logging.debug( 'Raw Data:\n{}\n'.format( pprint.pformat( data ) ) )
         # create r10k resource list
         for s in data[':sources']:
