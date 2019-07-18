@@ -456,7 +456,8 @@ def do_list():
     table_name = get_db_table_name()
     db_cols = get_db_cols()
     primary_key = get_db_primary_key()
-    cols = [ col for col in db_cols ]
+    # list of cols, starting with priamary_key, then the rest in sorted order
+    cols = [ primary_key ] + sorted( [ col for col in db_cols if col != primary_key ] )
     colnames = ','.join( cols )
     sqlparts = [ f'SELECT {colnames} FROM {table_name}' ]
     if len( args.nodelist ) > 0:
