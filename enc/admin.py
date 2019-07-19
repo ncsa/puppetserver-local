@@ -386,6 +386,17 @@ def do_init():
 def do_add():
     # Get node changes as data hash
     node_changes = parse_node_changes()
+    if len( node_changes ) < 1:
+        # If no nodes given AND args.<primary_key> has a value, use value of primary_key as node
+        args = get_args()
+        primary_key = get_db_primary_key()
+        primary_value = getattr( args, primary_key )
+        if not primary_value:
+            msg = f'Missing {primary_key}'
+            logger.error( msg )
+            raise SystemExit()
+        args.nodelist = [ primary_value ]
+        node_changes = parse_node_changes()
     # Create sql insert stmts from node_changes hash
     table_name = get_db_table_name()
     sqlcmds = []
