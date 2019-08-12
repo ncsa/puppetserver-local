@@ -501,17 +501,12 @@ def do_lookup():
         except (sqlite3.Error) as e:
             pass
     # Build output data hash
-    enc = { 'classes': [ 'role::default' ],
-            'parameters': { 'enc_hostname': node },
-            'environment': db_data.pop( 'environment', 'production' ),
-          }
-    enc['parameters'].update( db_data )
-    try:
-        role = db_data[ 'role' ]
-    except ( KeyError ) as e:
-        enc['classes'] = [ 'enc_error::hostname_not_found' ]
-    else:
-        enc['classes'] = [ f'role::{role}' ]
+    enc = { 'classes': [ 'enc_error::hostname_not_found' ] }
+    if len( db_data ) > 1:
+        enc = { 'parameters': { 'enc_hostname': node },
+                'environment': db_data.pop( 'environment', 'production' ),
+              }
+        enc['parameters'].update( db_data )
     print( '---' )
     print( yaml.dump( enc ) )
 

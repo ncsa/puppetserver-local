@@ -5,7 +5,7 @@ Nodes:
             - TEXT
             - PRIMARY KEY
             - NOT NULL
-        datacenter:
+        site:
             - TEXT
             - NOT NULL
             - DEFAULT "default"
