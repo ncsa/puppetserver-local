@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: future_fstrings -*-
 
 import sys
 
@@ -29,10 +30,18 @@ R10KSrc = collections.namedtuple( 'R10KSrc', ['basedir', 'environments'] )
 # Module level (global) settings
 resources = {}
 
+def get_default_env():
+    key = 'default_env'
+    if key not in resources:
+        resources[ key ] = pathlib.Path(
+            os.getenv( 'PUP_DEFAULT_ENV', default='production' ) )
+    return resources[ key ]
+
+
 def get_install_dir():
     key = 'install_dir'
     if key not in resources:
-        resources[ key ] = pathlib.Path( 
+        resources[ key ] = pathlib.Path(
             os.getenv( 'PUP_CUSTOM_DIR', default='/etc/puppetlabs/local' ) )
     return resources[ key ]
 
@@ -43,7 +52,7 @@ def get_cfg():
         base = get_install_dir()
         confdir = get_install_dir() / 'config' / 'config.ini'
         cfg = configparser.ConfigParser()
-        cfg.read( confdir )
+        cfg.read( str( confdir ) )
         resources[ key ] = cfg
     return resources[ key ]
 
@@ -54,9 +63,9 @@ def get_puppet_environmentpath():
         cfg = get_cfg()
         cmd = [ cfg['PUPPET']['puppet'] ]
         cmd.extend( 'config print environmentpath --section master'.split() )
-        proc = subprocess.run( cmd, 
+        proc = subprocess.run( cmd,
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, 
+                               stderr=subprocess.PIPE,
                                check=True,
                                timeout=30
                              )
@@ -72,9 +81,9 @@ def get_r10k_sources():
         cfg = get_cfg()
         sources = {}
         cmd = [ cfg['R10K']['r10k'], 'deploy', 'display' ]
-        proc = subprocess.run( cmd, 
+        proc = subprocess.run( cmd,
                                stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, 
+                               stderr=subprocess.PIPE,
                                check=True,
                                timeout=30
                              )
@@ -113,12 +122,13 @@ def symlink_is_missing_or_wrong( linkname, linktgt ):
 def mk_env_dirs( names ):
     cfg = get_cfg()
     envpath = get_puppet_environmentpath()
+    default_env = get_default_env()
     for env in names:
         dirpath = envpath / env
         logging.debug( f"making environment: '{env}' at '{dirpath}'" )
         dirpath.mkdir( exist_ok=True )
-        # create symlinks to major contents of production control env
-        prod_path = envpath / 'production'
+        # create symlinks to major contents of default env
+        prod_path = envpath / default_env
         for f in prod_path.iterdir():
             if f.is_symlink():
                 pass
@@ -134,6 +144,7 @@ def mk_env_dirs( names ):
 def find_missing_links( env_list ):
     cfg = get_cfg()
     sources = get_r10k_sources()
+    default_env = get_default_env()
     control = sources[ cfg['R10K']['control_repo_name'] ]
     missing_links = {}
     other_repo_names = [ x for x in sources if x != cfg['R10K']['control_repo_name'] ]
@@ -144,10 +155,10 @@ def find_missing_links( env_list ):
             # target link is same branch in other repo
             linktgt = rtksrc.basedir / env
             if not linktgt.exists():
-                # use default link target ... 'production'
-                linktgt = rtksrc.basedir / 'production'
+                # use default link target ... default_env
+                linktgt = rtksrc.basedir / default_env
             if symlink_is_missing_or_wrong( linkname, linktgt ):
-                logging.debug( 
+                logging.debug(
                     f'Link {env} {rtksrc.basedir.name}: {linkname} -> {linktgt}' )
                 missing_links[ linkname ] = linktgt
     return missing_links
