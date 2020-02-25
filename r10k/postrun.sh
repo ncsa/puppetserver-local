@@ -21,8 +21,12 @@ if [[ -z "$RP" ]] ; then
     die "run-parts not found"
 fi
 
-export PUP_DEFAULT_ENV=ncsa_production
+export PUP_DEFAULT_ENV=production
 
-# run-parts on debian 16.x works differently than on CentOS 7
-# ... have to give regex to select files to run
-$RP --verbose --regex='^[0-9]' "$DIRPATH"
+# test run-parts
+# run-parts on debian 16.x expects regex to select files to run
+# run-parts on CentOS 7.x doesn't support the regex option
+RP_regex="--regex='^[0-9]'"
+$RP --test $RP_regex "$DIRPATH" &>/dev/null || RP_regex=
+
+$RP --verbose $RP_regex "$DIRPATH"
