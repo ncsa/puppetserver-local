@@ -93,16 +93,15 @@ def run():
     branches = []
     for name, repo in sources.items():
         branches.extend( repo.environments )
-    env_names = set( branches )
-    logging.debug( 'env_names: {}'.format( pprint.pformat( env_names ) ) )
+    logging.debug( 'r10k_branch_names: {}'.format( pprint.pformat( branches ) ) )
 
-    # Keep dir if startswith any prefix in ignore_list
-    # OR is an r10k deployed environment
-    safe_list_raw = get_ignore_list() + env_names
-    safe_list_uniq = set( safe_list_raw )
-
+    # Keep env dirs if:
+    #   matches any regex in ignore_list
+    #   OR
+    #   is an r10k deployed environment
+    safe_list_strings = set().union( get_ignore_list(), branches )
     # Ignore_list items are regex strings, so convert all rawstrings to regex's
-    safe_list = [ re.compile(x) for x in safe_list_uniq ]
+    safe_list = [ re.compile(x) for x in safe_list_strings ]
 
     # Check children in basedir for each source
     for name,src in sources.items():
