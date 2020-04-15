@@ -26,7 +26,7 @@ export PUP_DEFAULT_ENV=production
 # test run-parts
 # run-parts on debian 16.x expects regex to select files to run
 # run-parts on CentOS 7.x doesn't support the regex option
-RP_regex="--regex='^[0-9]'"
+RP_regex=--regex='^[0-9]'
 $RP --test $RP_regex "$DIRPATH" &>/dev/null || RP_regex=
 
 $RP --verbose $RP_regex "$DIRPATH"
