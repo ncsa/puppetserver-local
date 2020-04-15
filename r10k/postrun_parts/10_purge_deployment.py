@@ -35,7 +35,7 @@ resources = {}
 def get_ignore_list():
     key = 'ignore_list'
     if key not in resources:
-        resources[ key ] = [ 'wip_*' ]
+        resources[ key ] = [ 'wip_*', 'production' ]
     return resources[ key ]
 
 
@@ -97,9 +97,12 @@ def run():
     logging.debug( 'env_names: {}'.format( pprint.pformat( env_names ) ) )
 
     # Keep dir if startswith any prefix in ignore_list
-    safe_list = [ re.compile( x ) for x in get_ignore_list() ]
-    # Keep if in r10k environments
-    safe_list.extend( [re.compile( x ) for x in env_names ] )
+    # OR is an r10k deployed environment
+    safe_list_raw = get_ignore_list() + env_names
+    safe_list_uniq = set( safe_list_raw )
+
+    # Ignore_list items are regex strings, so convert all rawstrings to regex's
+    safe_list = [ re.compile(x) for x in safe_list_uniq ]
 
     # Check children in basedir for each source
     for name,src in sources.items():
